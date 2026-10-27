@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0E2A2E">
+<title>منصة رئيس الطلبة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Kufi+Arabic:wght@600;800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deep-teal header, one centered column, floating pill tab bar.
+   Memorable element: the president's seal card on the home screen. */
+:root{
+  --bg:#EDF2F1;--card:#FFFFFF;--ink:#14262A;--mute:#5B7276;--line:#DCE6E5;--soft:#E3F0EE;--field:#F5F8F8;
+  --brand:#0F6B6A;--onbrand:#FFFFFF;--accent:#F2B632;--hdr:#0E2A2E;--mebg:#D5EDEB;
+  --ok:#12805A;--okbg:#DDF2E8;--warn:#8F5A00;--warnbg:#FCEFCF;--bad:#C0392B;--badbg:#FBE1DC;
+  --shadow:0 1px 2px rgba(14,42,46,.06),0 10px 26px -16px rgba(14,42,46,.3);
+  --f-display:"Noto Kufi Arabic","IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  --f-body:"IBM Plex Sans Arabic","Segoe UI","Noto Sans Arabic",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A1518;--card:#112326;--ink:#E5F0EF;--mute:#8CA6A7;--line:#1E3639;--soft:#16302F;--field:#0D1C1F;
+  --brand:#3FC1BD;--onbrand:#06211F;--hdr:#071417;--mebg:#173F3E;
+  --ok:#4FD29B;--okbg:#14372B;--warn:#F2B632;--warnbg:#3A2D0E;--bad:#FF8F7E;--badbg:#401E1B;
+  --shadow:0 1px 2px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1518;--card:#112326;--ink:#E5F0EF;--mute:#8CA6A7;--line:#1E3639;--soft:#16302F;--field:#0D1C1F;
+  --brand:#3FC1BD;--onbrand:#06211F;--hdr:#071417;--mebg:#173F3E;
+  --ok:#4FD29B;--okbg:#14372B;--warn:#F2B632;--warnbg:#3A2D0E;--bad:#FF8F7E;--badbg:#401E1B;
+  --shadow:0 1px 2px rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.8 var(--f-body);padding-bottom:112px;overflow-wrap:anywhere}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--hdr);z-index:10}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{background:var(--hdr);color:#fff;padding:calc(12px + env(safe-area-inset-top,0px)) 0 12px}
+.hrow{display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
+.logo svg{width:21px;height:21px}
+.htxt{flex:1;min-width:0}
+.htxt h1{margin:0;font:800 1rem/1.5 var(--f-display)}
+.htxt p{margin:0;font-size:.74rem;color:rgba(255,255,255,.72)}
+.chip{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:99px;font:500 .78rem var(--f-body);min-height:38px;max-width:46%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.chip.adm{background:var(--accent);border-color:var(--accent);color:#0E2A2E;font-weight:600;cursor:default}
+main{padding-block:16px}
+h2.sec{font:800 1.05rem/1.6 var(--f-display);margin:22px 2px 10px}
+h2.sec:first-child{margin-top:4px}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 4px;font:800 1.02rem/1.6 var(--f-display)}
+.card p{margin:8px 0}
+.card.urgent{border-right:4px solid var(--bad)}
+.card.pinned{border-right:4px solid var(--accent)}
+.row2{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.row2>div{min-width:0}
+.meta{color:var(--mute);font-size:.8rem}
+.tag{display:inline-block;font-size:.72rem;padding:1px 10px;border-radius:99px;background:var(--soft);color:var(--brand);margin-left:6px;font-weight:600}
+.tag.ok{background:var(--okbg);color:var(--ok)}.tag.warn{background:var(--warnbg);color:var(--warn)}.tag.bad{background:var(--badbg);color:var(--bad)}
+.tag.gold{background:var(--accent);color:#0E2A2E}
+.hero{position:relative;display:flex;align-items:center;gap:16px;color:#fff;border-radius:24px;padding:22px 20px;margin-bottom:14px;overflow:hidden;background-color:#0E2A2E;background-image:radial-gradient(circle at 0 0,rgba(63,193,189,.35),transparent 55%),linear-gradient(135deg,#0F6B6A,#0E2A2E 70%);box-shadow:0 18px 34px -18px rgba(14,42,46,.7)}
+.hero::after{content:"";position:absolute;left:-40px;bottom:-60px;width:190px;height:190px;border-radius:50%;border:26px solid rgba(255,255,255,.05)}
+.seal{position:relative;z-index:1;width:72px;height:72px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font:800 2rem/1 var(--f-display);color:var(--accent);border:2px solid var(--accent);box-shadow:inset 0 0 0 5px rgba(242,182,50,.14),inset 0 0 0 6px var(--accent)}
+.hbody{position:relative;z-index:1;min-width:0}
+.hero h2{margin:0;font:800 1.55rem/1.4 var(--f-display)}
+.role{margin-top:2px;font-size:.88rem;color:rgba(255,255,255,.82)}
+.role b{color:var(--accent);font-weight:600}
+.letter{padding:20px;line-height:2.05;font-size:.97rem}
+.letter p{margin:0 0 10px}
+.letter p.bis{text-align:center;color:var(--brand);font:800 1rem var(--f-display);margin-bottom:14px}
+.letter .sign{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);line-height:1.9}
+.stats{display:flex;background:var(--card);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.stat{flex:1;min-width:0;text-align:center;padding:14px 6px;font-size:.76rem;color:var(--mute);font-weight:500;border-left:1px solid var(--line)}
+.stat:last-child{border-left:0}
+.stat b{display:block;font:800 1.7rem/1.4 var(--f-display);color:var(--brand);font-variant-numeric:tabular-nums}
+.mini{padding:10px 0;border-bottom:1px solid var(--line)}.mini:last-child{border:0;padding-bottom:0}.mini:first-child{padding-top:0}
+label{display:block;font-size:.8rem;color:var(--mute);margin:12px 0 5px;font-weight:600}
+input,textarea,select{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;background:var(--field);color:var(--ink);font:inherit;font-size:16px;min-height:48px}
+textarea{min-height:96px;resize:vertical}
+input:focus,textarea:focus,select:focus,.btn:focus-visible,.choice:focus-visible,nav button:focus-visible,.chip:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.cols{display:flex;gap:10px;flex-wrap:wrap}.cols>*{flex:1;min-width:140px}
+.btn{background:var(--brand);color:var(--onbrand);border:0;padding:11px 20px;border-radius:14px;cursor:pointer;font:600 .92rem var(--f-body);min-height:46px;touch-action:manipulation}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:var(--soft);color:var(--brand)}
+.btn.sm{padding:6px 14px;font-size:.8rem;min-height:40px;border-radius:12px}
+.btn.danger{background:var(--badbg);color:var(--bad)}
+.btn.armed{background:var(--bad);color:#fff}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.note{background:var(--soft);border-radius:12px;padding:10px 14px;font-size:.84rem;color:var(--mute);margin-bottom:12px;line-height:1.8}
+.note.warn{background:var(--warnbg);color:var(--warn)}
+.empty{text-align:center;color:var(--mute);padding:30px 14px;background:var(--card);border:1.5px dashed var(--line);border-radius:18px;line-height:2}
+.err{color:var(--bad);font-size:.82rem;min-height:1.2em;margin-top:6px}
+.opt{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.bar{background:var(--field);border-radius:12px;height:42px;position:relative;overflow:hidden;border:1px solid var(--line);flex:1;min-width:0}
+.bar i{position:absolute;top:0;bottom:0;right:0;background:var(--soft);border-left:3px solid var(--brand)}
+.bar .in{position:relative;display:flex;justify-content:space-between;gap:8px;padding:0 14px;line-height:40px;font-size:.88rem}
+.bar .in b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.choice{display:flex;align-items:center;gap:12px;width:100%;text-align:right;padding:12px 14px;margin-bottom:8px;border:1.5px solid var(--line);border-radius:14px;background:var(--field);color:var(--ink);font:inherit;cursor:pointer;min-height:50px;touch-action:manipulation}
+.choice.sel{border-color:var(--brand);background:var(--soft);font-weight:600}
+.dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--mute);flex:none}
+.choice.sel .dot{border-color:var(--brand);background:var(--brand);box-shadow:inset 0 0 0 4px var(--soft)}
+/* chat */
+.chathead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.chathead h2{margin:0}
+.lockbar{display:flex;align-items:center;gap:8px;background:var(--warnbg);color:var(--warn);border-radius:12px;padding:9px 14px;font-size:.85rem;font-weight:500;margin-bottom:10px}
+.msgs{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.msg{display:flex;gap:8px;align-items:flex-end;min-width:0}
+.msg.me{flex-direction:row-reverse}
+.av{width:34px;height:34px;border-radius:50%;flex:none;color:#fff;display:flex;align-items:center;justify-content:center;font:800 .9rem var(--f-display)}
+.bub{background:var(--card);box-shadow:var(--shadow);border-radius:18px 18px 18px 6px;padding:8px 14px;max-width:min(82%,520px);min-width:0}
+.msg.me .bub{background:var(--mebg);border-radius:18px 18px 6px 18px}
+.who{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:.76rem;color:var(--mute)}
+.who b{color:var(--ink);font-weight:600;font-size:.82rem}
+.tx{white-space:pre-wrap;line-height:1.7}
+.mtools{display:flex;gap:6px;margin-top:4px}
+.mtools .btn{min-height:32px;padding:2px 10px;font-size:.72rem;border-radius:10px}
+.composer{position:sticky;bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--card);border-radius:20px;box-shadow:0 8px 28px -10px rgba(14,42,46,.35),0 0 0 1px var(--line);padding:8px;display:flex;gap:8px;align-items:flex-end}
+.composer textarea{min-height:46px;max-height:120px;border:0;background:var(--field);padding:11px 13px;resize:none}
+.composer .btn{min-width:76px;padding:0 16px;white-space:nowrap}
+.composer .off{flex:1;text-align:center;color:var(--mute);font-size:.88rem;padding:10px}
+.mgr{margin-bottom:12px}
+.mrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.mrow:last-child{border:0}
+.mrow span{min-width:0}
+.thread{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.fb{max-width:88%;padding:10px 14px;border-radius:16px;background:var(--card);box-shadow:var(--shadow)}
+.fb.s{background:var(--mebg);align-self:flex-start}
+.fb.a{align-self:flex-end;border:1.5px solid var(--accent)}
+.fb .tx{margin-top:2px}
+.srow{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:var(--card);border:0;border-radius:16px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow);font:inherit;color:inherit;cursor:pointer;min-height:56px}
+.srow .grow{flex:1;min-width:0}
+.dotbadge{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:9;pointer-events:none;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+.navin{max-width:520px;margin:0 auto;background:var(--card);border-radius:24px;display:flex;padding:6px;box-shadow:0 12px 34px -8px rgba(14,42,46,.38),0 0 0 1px var(--line);pointer-events:auto}
+nav button{position:relative;flex:1;min-width:0;border:0;background:none;color:var(--mute);font:600 .68rem var(--f-body);display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 2px;cursor:pointer;border-radius:18px;min-height:52px;touch-action:manipulation}
+nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--brand);background:var(--soft);font-weight:800}
+nav .pip{position:absolute;top:6px;left:50%;margin-left:6px;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--card)}
+.sheet{position:fixed;inset:0;z-index:30;background:rgba(7,20,23,.62);display:flex;align-items:center;justify-content:center;padding:16px}
+.sheetcard{background:var(--card);border-radius:22px;padding:22px 20px;width:100%;max-width:400px;box-shadow:0 24px 60px -20px rgba(0,0,0,.6)}
+.sheetcard h2{margin:0 0 6px;font:800 1.2rem var(--f-display)}
+.sheetcard p{margin:0 0 6px;color:var(--mute);font-size:.88rem}
+.lnk{background:none;border:0;color:var(--mute);font:inherit;font-size:.74rem;text-decoration:underline;cursor:pointer;min-height:44px;padding:0 12px}
+.toast{position:fixed;bottom:calc(100px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--hdr);color:#fff;padding:11px 22px;border-radius:99px;font:600 .86rem var(--f-body);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40;max-width:88%;text-align:center}
+.toast.show{opacity:1}
+.foot{text-align:center;color:var(--mute);font-size:.74rem;margin-top:22px}
+.sig{display:flex;flex-direction:column;align-items:center;gap:2px;margin:26px 0 6px;color:var(--mute);font-size:.74rem}
+.sig .mono{position:relative;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--accent);box-shadow:inset 0 0 0 4px var(--card),inset 0 0 0 5px var(--accent);background:var(--hdr);color:var(--accent);font:700 2rem/1 Caveat,"Segoe Script","Brush Script MT",cursive;letter-spacing:.02em;direction:ltr}
+.sig svg{width:54px;height:10px;margin-top:-4px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round}
+.sig b{color:var(--ink);font-weight:600;font-size:.8rem}
+@media(max-width:600px){.hero{padding:20px 16px;gap:14px}.seal{width:62px;height:62px;font-size:1.7rem}.hero h2{font-size:1.35rem}.cols>*{min-width:100%}form .actions .btn{width:100%}.letter{padding:18px 16px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<script>document.documentElement.dir="rtl";document.documentElement.lang="ar";</script>
+
+<header><div class="wrap hrow">
+  <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#F2B632" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M7 10.5V16c0 1.2 2.2 3 5 3s5-1.8 5-3v-5.5"/><path d="M21 8v6"/></svg></div>
+  <div class="htxt"><h1>منصة رئيس الطلبة</h1><p>محمد مروان · الصف E4</p></div>
+  <button class="chip" id="chip" type="button" data-act="chip" hidden></button>
+</div></header>
+<main class="wrap" id="main"></main>
+<nav><div class="navin" id="nav"></div></nav>
+<div class="sheet" id="sheet" hidden>
+  <form class="sheetcard" id="f-name" autocomplete="off">
+    <h2>ما اسمك؟</h2>
+    <p>سيظهر هذا الاسم بجانب رسائلك في الدردشة، ويراه رئيس الطلبة مع ملاحظاتك.</p>
+    <label for="nameIn">الاسم</label>
+    <input id="nameIn" name="name" maxlength="24" required placeholder="مثال: علي حسن">
+    <div class="err" id="nameErr"></div>
+    <div class="actions"><button class="btn" id="nameSave" type="submit">حفظ الاسم</button><button class="btn ghost" id="nameCancel" type="button" data-act="sheet-close" hidden>إلغاء</button></div>
+  </form>
+</div>
+<div class="sheet" id="sheetA" hidden>
+  <form class="sheetcard" id="f-login" autocomplete="on">
+    <h2>دخول رئيس الطلبة</h2>
+    <p>هذا الدخول لرئيس الطلبة فقط. الطلبة لا يحتاجون إلى حساب.</p>
+    <label for="admEmail">البريد الإلكتروني</label>
+    <input id="admEmail" name="email" type="email" autocomplete="username" required>
+    <label for="admPass">كلمة المرور</label>
+    <input id="admPass" name="pass" type="password" autocomplete="current-password" required>
+    <div class="err" id="admErr"></div>
+    <div class="actions"><button class="btn" id="admGo" type="submit">دخول</button><button class="btn ghost" type="button" data-act="login-close">إلغاء</button></div>
+  </form>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,doc,collection,getDoc,setDoc,updateDoc,deleteDoc,addDoc,onSnapshot,query,orderBy,limit} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getAuth,onAuthStateChanged,signInAnonymously,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+var cfg=window.APP_CONFIG||{};
+var fb=cfg.firebase||{};
+var be={configured:!!(fb.apiKey&&String(fb.apiKey).indexOf("PASTE")<0&&fb.projectId),adminEmail:String(cfg.adminEmail||"").trim().toLowerCase()};
+if(be.configured){
+  var app=initializeApp(fb),auth=getAuth(app),fs=getFirestore(app);
+  var docRef=function(path){var r=doc(fs,path);return{id:r.id,path:path,get:function(){return getDoc(r)},set:function(d){return setDoc(r,d)},update:function(d){return updateDoc(r,d)},delete:function(){return deleteDoc(r)},onSnapshot:function(n,e){return onSnapshot(r,n,e)},collection:function(s){return colRef(path+"/"+s)}}};
+  var colRef=function(path,cons){cons=cons||[];var c=collection(fs,path);var q=function(){return cons.length?query.apply(null,[c].concat(cons)):c};
+    return{path:path,orderBy:function(f,d){return colRef(path,cons.concat([orderBy(f,d)]))},limit:function(n){return colRef(path,cons.concat([limit(n)]))},onSnapshot:function(n,e){return onSnapshot(q(),n,e)},add:function(d){return addDoc(c,d)},doc:function(id){return docRef(path+"/"+id)}}};
+  be.db={doc:docRef,collection:function(p){return colRef(p)}};
+  be.onUser=function(cb){onAuthStateChanged(auth,function(u){if(!u){signInAnonymously(auth).catch(function(e){cb(null,e)});return}cb({uid:u.uid,email:u.email||""})})};
+  be.signInAdmin=function(e,p){return signInWithEmailAndPassword(auth,e,p)};
+  be.signOut=function(){return signOut(auth)};
+}
+window.HubBackend=be;window.dispatchEvent(new Event("hubbackend"));
+</script>
+<script>
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s)};
+var esc=function(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
+var ADMIN_NAME="محمد مروان";
+var CATS=["عام","عاجل","أكاديمي","أنشطة وأندية"];
+var TOPICS=["المرافق","الدراسة","الحياة الطلابية","اقتراح","شكوى","أخرى"];
+var D={ann:[],polls:[],votes:[],members:{},mutes:{},cfg:{},chat:[],thread:[],ready:{}};
+var backend=null,statusMsg='',db=null,uid=null,isAdmin=false,realAdmin=false,preview=false,isOwner=false,canWrite=null,tab="home";
+var threadUid=null,unsubThread=null,pending={},armed={},showMgr=false,sending=false,nameForced=false;
+
+var IC={
+ home:'<svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg>',
+ ann:'<svg viewBox="0 0 24 24"><path d="M3 11v3l12 5V6L3 11z"/><path d="M15 9c2 0 4 1.3 4 3s-2 3-4 3"/><path d="M6 14v4"/></svg>',
+ polls:'<svg viewBox="0 0 24 24"><path d="M5 21V10M12 21V4M19 21v-8"/></svg>',
+ chat:'<svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>',
+ fb:'<svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5z"/></svg>'};
+function tabsList(){return [["home","الرئيسية"],["ann","الإعلانات"],["polls","الاستطلاعات"],["chat","الدردشة"],["fb",isAdmin?"الملاحظات":"ملاحظاتي"]]}
+
+/* ---------- helpers ---------- */
+var tt=0;
+function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(function(){t.classList.remove("show")},2600)}
+function em(e){var m={quota_exceeded:"امتلأت مساحة التخزين. احذف بعض الرسائل القديمة.",resource_exhausted:"محاولات كثيرة. انتظر لحظة ثم أعد المحاولة.","permission-denied":"لا يمكنك تنفيذ هذا الآن (قد تكون الدردشة مقفلة أو حسابك مكتوم).","resource-exhausted":"محاولات كثيرة. انتظر لحظة ثم أعد المحاولة.","unavailable":"تعذّر الاتصال. تحقق من الإنترنت وأعد المحاولة.",revoked:"انتهت صلاحية وصولك إلى المنصة."};return m[e&&e.code]||"تعذّر الحفظ. تحقق من الاتصال وأعد المحاولة."}
+function W(fn,ok){if(preview){toast("المعاينة للعرض فقط. ارجع إلى وضع الرئيس للتعديل.");return Promise.resolve(false)}return Promise.resolve().then(fn).then(function(){if(ok)toast(ok);return true}).catch(function(e){toast(em(e));return false})}
+function fmtT(ts){var d=new Date(ts),n=new Date(),tm=d.toLocaleTimeString("ar-IQ",{hour:"2-digit",minute:"2-digit"});return d.toDateString()===n.toDateString()?tm:d.toLocaleDateString("ar-IQ",{day:"numeric",month:"short"})+" "+tm}
+function fmtD(ts){return new Date(ts).toLocaleDateString("ar-IQ",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+function adminUid(){return D.cfg.admin&&D.cfg.admin.uid}
+function isAdm(id){return !!id&&id===adminUid()}
+function nameOf(id){if(isAdm(id))return ADMIN_NAME;var m=D.members[id];return(m&&m.name)||"طالب"}
+function myName(){var m=D.members[uid];return m&&m.name||""}
+function hue(id){var h=0,s=String(id);for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
+function avatar(id){var n=nameOf(id);return '<div class="av" style="background:hsl('+hue(id)+' 42% 38%)">'+esc(n.charAt(0))+'</div>'}
+function isArmed(k){return armed[k]&&Date.now()-armed[k]<3000}
+function arm(k){armed[k]=Date.now();paint();setTimeout(paint,3100)}
+function delBtn(k,act,id,label){var a=isArmed(k);return '<button class="btn sm '+(a?'armed':'danger')+'" data-act="'+act+'" data-id="'+esc(id)+'">'+(a?"اضغط للتأكيد":label||"حذف")+'</button>'}
+function chatState(){if(isAdmin)return"ok";if(D.mutes[uid])return"muted";if(D.cfg.chat&&D.cfg.chat.locked)return"locked";return"ok"}
+function needsLogin(){return !db||!uid}
+function loginNote(){var m=(backend&&!backend.configured)?'لم يتم ربط الموقع بقاعدة البيانات بعد. أكمل خطوات ملف الإعداد ثم أعد فتح الصفحة.':(statusMsg||'جارٍ الاتصال بالمنصة…');return '<div class="note warn">'+m+'</div>'}
+function readOnlyNote(){return (!isAdmin&&canWrite===false)?'<div class="note warn">حسابك في وضع المشاهدة فقط. اطلب من رئيس الطلبة منحك صلاحية «مساهم» حتى تتمكن من المشاركة.</div>':""}
+function unreadFb(){
+  if(isAdmin){var n=0;for(var k in D.members){var m=D.members[k];if(m.fbAt&&m.fbAt>(m.adminSeenAt||0))n++}return n}
+  var me=D.members[uid];return me&&me.replyAt&&me.replyAt>(me.replySeenAt||0)?1:0}
+
+/* ---------- views ---------- */
+var views={
+ home:{shell:function(){return '<div id="live"></div>'},live:liveHome},
+ ann:{shell:shellAnn,live:liveAnn},
+ polls:{shell:shellPolls,live:livePolls},
+ chat:{shell:shellChat,live:liveChat},
+ fb:{shell:shellFb,live:liveFb}
+};
+function show(t){tab=t;$("#main").innerHTML=(preview?'<div class="note warn" id="pv">أنت تشاهد المنصة كما يراها الطالب. الإرسال والتعديل معطّلان. <button class="btn sm ghost" type="button" data-act="chip">العودة لوضع الرئيس</button></div>':"")+views[t].shell();views[t].live();renderNav();window.scrollTo(0,0);if(t==="chat")scrollBottom(true);if(t==="fb")markSeen()}
+function paint(){views[tab].live();renderNav();renderChip()}
+var pq=0;function schedule(){if(pq)return;pq=requestAnimationFrame(function(){pq=0;paint()})}
+function renderNav(){
+  $("#nav").innerHTML=tabsList().map(function(t){var k=t[0],pip=(k==="fb"&&unreadFb()>0&&tab!=="fb")?'<span class="pip"></span>':"";return '<button type="button" class="'+(tab===k?"on":"")+'" data-act="go" data-id="'+k+'">'+IC[k]+'<span>'+t[1]+'</span>'+pip+'</button>'}).join("")}
+function renderChip(){var c=$("#chip");if(needsLogin()){c.hidden=true;return}c.hidden=false;if(realAdmin){c.className="chip adm";c.disabled=false;c.textContent=preview?"عودة لوضع الرئيس":"عرض كطالب"}else{c.className="chip";c.disabled=false;c.textContent=myName()||"اختر اسمك"}}
+function foot(){return '<div class="sig" role="img" aria-label="تصميم وتطوير MS"><div class="mono">MS</div><svg viewBox="0 0 54 10" aria-hidden="true"><path d="M2 6c8-6 14 3 22-1s14-3 28 0"/></svg><span>تصميم وتطوير</span><b>MS</b></div><div class="foot">منصة رئيس الطلبة · محمد مروان · الصف E4</div><div class="foot"><button type="button" class="lnk" data-act="'+(realAdmin?"admin-out":"admin-login")+'">'+(realAdmin?"تسجيل خروج الرئيس":"دخول رئيس الطلبة")+'</button></div>'}
+
+/* home */
+function liveHome(){
+  var pinned=D.ann.filter(function(a){return a.pin});
+  var open=D.polls.filter(function(p){return !p.closed});
+  var mine=mineVotes();
+  var waiting=open.filter(function(p){return mine[p.id]==null}).length;
+  var stats=isAdmin
+   ?[[Object.keys(D.members).length,"طلاب مسجّلون"],[open.length,"استطلاعات مفتوحة"],[unreadFb(),"ملاحظات جديدة"]]
+   :[[D.ann.length,"إعلانات"],[waiting,"استطلاعات بانتظارك"],[unreadFb(),"ردود جديدة"]];
+  $("#live").innerHTML=
+   '<div class="hero"><div class="seal">م</div><div class="hbody"><h2>'+ADMIN_NAME+'</h2><div class="role">رئيس الطلبة · <b>الصف E4</b></div></div></div>'
+  +'<div class="card letter"><p class="bis">بسم الله الرحمن الرحيم</p>'
+  +'<p>يتشرّف الطالب <b>محمد مروان</b> من الصف <b>E4</b> بأن يضع بين أيديكم هذه المنصة، بصفته رئيسًا للطلبة، لتكون حلقة وصل مباشرة وموثوقة بين الإدارة والهيئة التدريسية وجميع الطلبة.</p>'
+  +'<p>وإيمانًا منه بأن مسؤولية التمثيل الطلابي أمانة وعمل مشترك، يلتزم بالإصغاء إلى آرائكم ومقترحاتكم، والعمل بروح الفريق الواحد من أجل بيئة دراسية منظمة ومتميزة، ونشر الإعلانات والقرارات المهمة بشفافية ووضوح.</p>'
+  +'<p>ويدعو جميع الزملاء إلى المشاركة الفاعلة في الاستطلاعات والدردشة، وإبداء ملاحظاتهم واقتراحاتهم، فكل رأي يُسهم في خدمة الصالح العام لطلبتنا.</p>'
+  +'<p class="sign">مع فائق الاحترام والتقدير،<br><b>محمد مروان</b><br>رئيس الطلبة – الصف E4</p></div>'
+  +(needsLogin()?loginNote():readOnlyNote())
+  +'<div class="stats">'+stats.map(function(s){return '<div class="stat"><b>'+s[0]+'</b>'+s[1]+'</div>'}).join("")+'</div>'
+  +'<h2 class="sec">إعلانات مثبّتة</h2><div class="card">'+(pinned.length?pinned.map(function(a){return '<div class="mini"><b>'+esc(a.title)+'</b><br><span class="meta">'+esc(String(a.body||"").slice(0,120))+'…</span></div>'}).join(""):'<div class="meta">لا توجد إعلانات مثبّتة حاليًا.</div>')+'</div>'
+  +foot();
+}
+
+/* announcements */
+function shellAnn(){
+  var f=isAdmin?'<h2 class="sec">إعلان جديد</h2><form class="card" id="f-ann" autocomplete="off"><label for="annTitle">العنوان</label><input id="annTitle" name="title" required maxlength="120"><div class="cols"><div><label for="annCat">التصنيف</label><select id="annCat" name="cat">'+CATS.map(function(c){return '<option>'+c+'</option>'}).join("")+'</select></div></div><label for="annBody">نص الإعلان</label><textarea id="annBody" name="body" required maxlength="2000"></textarea><div class="actions"><button class="btn" type="submit">نشر الإعلان</button></div></form>':"";
+  return f+'<h2 class="sec">الإعلانات</h2><div id="live"></div>'}
+function liveAnn(){
+  if(needsLogin()){$("#live").innerHTML=loginNote();return}
+  var l=D.ann.slice().sort(function(a,b){return (b.pin?1:0)-(a.pin?1:0)||(b.ts||0)-(a.ts||0)});
+  $("#live").innerHTML=(l.length?l.map(function(a){
+    var cls=a.cat==="عاجل"?"urgent":(a.pin?"pinned":"");
+    return '<div class="card '+cls+'"><div class="row2"><div><h3>'+esc(a.title)+'</h3><div class="meta"><span class="tag '+(a.cat==="عاجل"?"bad":"")+'">'+esc(a.cat||"عام")+'</span>'+(a.pin?'<span class="tag warn">مثبّت</span>':"")+fmtD(a.ts||Date.now())+'</div></div></div><p class="tx">'+esc(a.body)+'</p>'
+     +(isAdmin?'<div class="actions"><button class="btn ghost sm" data-act="ann-pin" data-id="'+a.id+'">'+(a.pin?"إلغاء التثبيت":"تثبيت")+'</button>'+delBtn("ann"+a.id,"ann-del",a.id)+'</div>':"")+'</div>'}).join("")
+   :'<div class="empty">'+(isAdmin?"لا توجد إعلانات بعد.<br>انشر أول إعلان من النموذج أعلاه.":"لا توجد إعلانات بعد.<br>ستظهر هنا فور نشرها.")+'</div>')+foot()}
+
+/* polls */
+function shellPolls(){
+  var f=isAdmin?'<h2 class="sec">استطلاع جديد</h2><form class="card" id="f-poll" autocomplete="off"><label for="pollQ">السؤال</label><input id="pollQ" name="q" required maxlength="160"><label for="pollOpts">الخيارات (خيار في كل سطر، اثنان على الأقل)</label><textarea id="pollOpts" name="opts" required placeholder="نعم&#10;لا&#10;لا أدري"></textarea><div class="actions"><button class="btn" type="submit">إنشاء الاستطلاع</button></div></form>':"";
+  return f+'<h2 class="sec">الاستطلاعات</h2><div id="live"></div>'}
+function mineVotes(){var o={};D.votes.forEach(function(v){if(v.uid===uid)o[v.pid]=v.choice});return o}
+function pollCounts(pid,n){var c=[];for(var i=0;i<n;i++)c.push(0);D.votes.forEach(function(v){if(v.pid===pid&&v.choice!=null&&c[v.choice]!=null)c[v.choice]++});return c}
+function livePolls(){
+  if(needsLogin()){$("#live").innerHTML=loginNote();return}
+  var mine=mineVotes();
+  $("#live").innerHTML=readOnlyNote()+(D.polls.length?D.polls.map(function(p){
+    var counts=pollCounts(p.id,p.opts.length),tot=counts.reduce(function(a,b){return a+b},0);
+    var voted=mine[p.id]!=null,showRes=isAdmin||voted||p.closed;
+    var body;
+    if(showRes){body=p.opts.map(function(o,i){var pc=tot?Math.round(counts[i]/tot*100):0;return '<div class="opt"><div class="bar"><i style="width:'+pc+'%"></i><div class="in"><b>'+esc(o)+(voted&&mine[p.id]===i?" ✓":"")+'</b><span>'+counts[i]+' · '+pc+'%</span></div></div></div>'}).join("")}
+    else{var pick=pending[p.id];body=p.opts.map(function(o,i){return '<button type="button" class="choice '+(pick===i?"sel":"")+'" data-act="poll-pick" data-id="'+p.id+'" data-i="'+i+'"><span class="dot"></span>'+esc(o)+'</button>'}).join("")+'<div class="actions"><button class="btn" data-act="poll-confirm" data-id="'+p.id+'"'+(pick==null||canWrite===false?" disabled":"")+'>تأكيد التصويت</button></div><div class="meta" style="margin-top:6px">لا يمكن تغيير الصوت بعد التأكيد.</div>'}
+    return '<div class="card"><div class="row2"><div><h3>'+esc(p.q)+'</h3><div class="meta"><span class="tag '+(p.closed?"":"ok")+'">'+(p.closed?"مغلق":"مفتوح")+'</span>'+tot+' صوت'+(voted?" · تم تسجيل صوتك":"")+'</div></div></div><div style="margin-top:10px">'+body+'</div>'
+     +(isAdmin?'<div class="actions"><button class="btn ghost sm" data-act="poll-close" data-id="'+p.id+'">'+(p.closed?"إعادة الفتح":"إغلاق الاستطلاع")+'</button>'+delBtn("poll"+p.id,"poll-del",p.id)+'</div>':"")+'</div>'}).join("")
+   :'<div class="empty">'+(isAdmin?"لا توجد استطلاعات بعد.<br>أنشئ أول استطلاع من النموذج أعلاه.":"لا توجد استطلاعات حاليًا.<br>ستظهر هنا عندما ينشرها رئيس الطلبة.")+'</div>')+foot()}
+
+/* chat */
+function shellChat(){
+  return '<div class="chathead"><h2 class="sec" style="margin:0">الدردشة</h2>'+(isAdmin?'<button class="btn ghost sm" type="button" data-act="chat-mgr" id="mgrBtn">إدارة الدردشة</button>':"")+'</div><div id="live"></div>'
+   +'<form class="composer" id="f-chat" autocomplete="off"><div class="off" id="chatOff" hidden></div><textarea id="chatIn" name="text" rows="1" maxlength="500" placeholder="اكتب رسالتك…" aria-label="رسالتك"></textarea><button class="btn" id="chatSend" type="submit">إرسال</button></form>'}
+function nearBottom(){return window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-200}
+function scrollBottom(force){if(force||nearBottom())window.scrollTo(0,document.documentElement.scrollHeight)}
+function liveChat(){
+  var nb=nearBottom(),st=chatState();
+  var h="";
+  if(needsLogin()){$("#live").innerHTML=loginNote();composerState("off","سجّل الدخول للمشاركة");return}
+  if(st==="locked")h+='<div class="lockbar">الدردشة مقفلة حاليًا من رئيس الطلبة. يمكنك قراءة الرسائل فقط.</div>';
+  if(st==="muted")h+='<div class="lockbar">تم كتم حسابك في الدردشة. تواصل مع رئيس الطلبة إن كان ذلك بالخطأ.</div>';
+  if(isAdmin&&D.cfg.chat&&D.cfg.chat.locked)h+='<div class="lockbar">الدردشة مقفلة على الطلبة. أنت وحدك تستطيع الكتابة.</div>';
+  if(isAdmin&&showMgr)h+=mgrPanel();
+  var list=D.chat.slice().reverse();
+  h+=list.length?'<div class="msgs">'+list.map(msgHtml).join("")+'</div>':'<div class="empty">لا توجد رسائل بعد.<br>ابدأ المحادثة بتحية للزملاء.</div>';
+  $("#live").innerHTML=h;
+  var mb=$("#mgrBtn");if(mb)mb.textContent=showMgr?"إخفاء الإدارة":"إدارة الدردشة";
+  if(st==="locked")composerState("off","الدردشة مقفلة حاليًا");
+  else if(st==="muted")composerState("off","حسابك مكتوم");
+  else if(!isAdmin&&canWrite===false)composerState("off","حسابك للمشاهدة فقط");
+  else composerState("on");
+  if(nb)scrollBottom(true)}
+function composerState(m,t){var off=$("#chatOff"),ta=$("#chatIn"),b=$("#chatSend");if(!off)return;if(m==="off"){off.hidden=false;off.textContent=t;ta.hidden=true;b.hidden=true}else{off.hidden=true;ta.hidden=false;b.hidden=false}}
+function msgHtml(m){
+  var me=m.uid===uid,adm=isAdm(m.uid),tools="";
+  if(isAdmin){tools='<div class="mtools">'+delBtn("msg"+m.id,"msg-del",m.id)+(!adm&&m.uid?'<button class="btn ghost sm" data-act="'+(D.mutes[m.uid]?"unmute":"mute")+'" data-id="'+esc(m.uid)+'">'+(D.mutes[m.uid]?"إلغاء كتمه":"كتم")+'</button>':"")+'</div>'}
+  return '<div class="msg '+(me?"me":"")+'">'+avatar(m.uid)+'<div class="bub"><div class="who"><b>'+esc(nameOf(m.uid))+'</b>'+(adm?'<span class="tag gold">رئيس الطلبة</span>':"")+(D.mutes[m.uid]&&isAdmin?'<span class="tag bad">مكتوم</span>':"")+'<span>'+fmtT(m.ts||Date.now())+'</span></div><div class="tx">'+esc(m.text)+'</div>'+tools+'</div></div>'}
+function mgrPanel(){
+  var locked=!!(D.cfg.chat&&D.cfg.chat.locked);
+  var ids=Object.keys(D.members).filter(function(k){return D.members[k].name}).sort(function(a,b){return D.members[a].name.localeCompare(D.members[b].name,"ar")});
+  return '<div class="card mgr"><div class="row2"><div><h3>قفل الدردشة</h3><div class="meta">عند القفل يقرأ الطلاب فقط ولا يستطيعون الكتابة.</div></div><button class="btn '+(locked?"":"danger")+'" data-act="chat-lock">'+(locked?"فتح الدردشة":"قفل الدردشة")+'</button></div>'
+   +'<h3 style="margin-top:14px">الطلاب ('+ids.length+')</h3>'
+   +(ids.length?ids.map(function(k){var mu=!!D.mutes[k];return '<div class="mrow"><span><b>'+esc(D.members[k].name)+'</b>'+(mu?' <span class="tag bad">مكتوم</span>':"")+'</span><button class="btn ghost sm" data-act="'+(mu?"unmute":"mute")+'" data-id="'+esc(k)+'">'+(mu?"إلغاء الكتم":"كتم")+'</button></div>'}).join(""):'<div class="meta">لم يسجّل أي طالب اسمه بعد.</div>')+'</div>'}
+
+/* feedback */
+function shellFb(){
+  if(isAdmin){
+    if(threadUid)return '<div class="chathead"><h2 class="sec" style="margin:0">'+esc(nameOf(threadUid))+'</h2><button class="btn ghost sm" type="button" data-act="fb-back">رجوع</button></div><div id="live"></div><form class="card" id="f-reply" autocomplete="off"><label for="replyIn">ردّك</label><textarea id="replyIn" name="text" required maxlength="1000"></textarea><div class="actions"><button class="btn" type="submit">إرسال الرد</button></div></form>';
+    return '<h2 class="sec">ملاحظات الطلبة</h2><div id="live"></div>'}
+  return '<h2 class="sec">أرسل ملاحظتك أو اقتراحك</h2><div class="note">تصل ملاحظتك إلى رئيس الطلبة وحده، وسيظهر ردّه هنا.</div>'
+   +'<form class="card" id="f-fb" autocomplete="off"><label for="fbTopic">الموضوع</label><select id="fbTopic" name="topic">'+TOPICS.map(function(t){return '<option>'+t+'</option>'}).join("")+'</select><label for="fbText">ملاحظتك</label><textarea id="fbText" name="text" required maxlength="1000" placeholder="اكتب ملاحظتك أو اقتراحك هنا…"></textarea><div class="actions"><button class="btn" type="submit">إرسال إلى رئيس الطلبة</button></div></form>'
+   +'<h2 class="sec">ملاحظاتك وردود رئيس الطلبة</h2><div id="live"></div>'}
+function thHtml(it){var a=it.from==="a";return '<div class="fb '+(a?"a":"s")+'"><div class="meta">'+(a?"رئيس الطلبة":(isAdmin?esc(nameOf(threadUid)):"أنت"))+(it.topic?' · <span class="tag">'+esc(it.topic)+'</span>':"")+' · '+fmtT(it.ts||Date.now())+'</div><div class="tx">'+esc(it.text)+'</div></div>'}
+function liveFb(){
+  if(needsLogin()){$("#live").innerHTML=loginNote();return}
+  if(isAdmin&&!threadUid){
+    var ids=Object.keys(D.members).filter(function(k){return D.members[k].fbAt}).sort(function(a,b){return D.members[b].fbAt-D.members[a].fbAt});
+    $("#live").innerHTML=(ids.length?ids.map(function(k){var m=D.members[k],un=m.fbAt>(m.adminSeenAt||0);return '<button class="srow" type="button" data-act="fb-open" data-id="'+esc(k)+'">'+avatar(k)+'<span class="grow"><b>'+esc(m.name||"طالب")+'</b><br><span class="meta">آخر رسالة: '+fmtT(m.fbAt)+'</span></span>'+(un?'<span class="dotbadge" title="جديد"></span><span class="tag warn">جديد</span>':"")+'</button>'}).join(""):'<div class="empty">لا توجد ملاحظات بعد.<br>ستظهر هنا عندما يرسل الطلبة ملاحظاتهم.</div>')+foot();return}
+  var nb=nearBottom();
+  $("#live").innerHTML=(D.thread.length?'<div class="thread">'+D.thread.map(thHtml).join("")+'</div>':'<div class="empty">'+(isAdmin?"لا توجد رسائل في هذه المحادثة.":"لم ترسل أي ملاحظة بعد.")+'</div>')+(isAdmin?"":readOnlyNote()+foot());
+  if(isAdmin&&nb)scrollBottom(true)}
+
+/* ---------- name sheet ---------- */
+function openSheet(forced){nameForced=!!forced;$("#sheet").hidden=false;$("#nameCancel").hidden=!!forced;$("#nameIn").value=myName();$("#nameErr").textContent="";setTimeout(function(){$("#nameIn").focus()},50)}
+function closeSheet(){$("#sheet").hidden=true}
+function validName(n){
+  n=n.replace(/\s+/g," ").trim();
+  if(n.length<2)return{e:"الاسم قصير جدًا. اكتب حرفين على الأقل."};
+  if(n.indexOf("رئيس الطلبة")>-1||n.replace(/\s/g,"")===ADMIN_NAME.replace(/\s/g,""))return{e:"هذا الاسم محجوز. اكتب اسمك الحقيقي."};
+  for(var k in D.members){if(k!==uid&&D.members[k].name&&D.members[k].name.toLowerCase()===n.toLowerCase())return{e:"هذا الاسم مستخدم. أضف حرفًا من اسم العائلة للتمييز."}}
+  return{n:n}}
+function ensureName(){if(isAdmin||preview)return true;if(myName())return true;openSheet(true);return false}
+
+/* ---------- writes ---------- */
+var forms={
+ "f-login":function(f){
+   var be=backend;if(!be||!be.configured){$("#admErr").textContent="الموقع غير مربوط بقاعدة البيانات بعد.";return}
+   var btn=$("#admGo");btn.disabled=true;$("#admErr").textContent="";
+   be.signInAdmin(f.elements.email.value.trim(),f.elements.pass.value).then(function(){f.elements.pass.value=""}).catch(function(e){
+     $("#admErr").textContent=(e&&/network/.test(e.code||""))?"تعذّر الاتصال. تحقق من الإنترنت.":"البريد الإلكتروني أو كلمة المرور غير صحيحة."}).then(function(){btn.disabled=false})},
+ "f-name":function(f){
+   var v=validName(f.elements.name.value);if(v.e){$("#nameErr").textContent=v.e;return}
+   var cur=D.members[uid],btn=$("#nameSave");btn.disabled=true;
+   W(function(){return cur?db.doc("members/"+uid).update({name:v.n}):db.doc("members/"+uid).set({name:v.n,joinedAt:Date.now()})},"تم حفظ الاسم").then(function(ok){btn.disabled=false;if(ok)closeSheet()})},
+ "f-ann":function(f){var t=f.elements.title.value.trim(),b=f.elements.body.value.trim();if(!t||!b)return;
+   W(function(){return db.collection("announcements").add({title:t,body:b,cat:f.elements.cat.value,pin:false,ts:Date.now()})},"تم نشر الإعلان").then(function(ok){if(ok)f.reset()})},
+ "f-poll":function(f){var q=f.elements.q.value.trim(),o=f.elements.opts.value.split("\n").map(function(s){return s.trim()}).filter(Boolean);
+   if(o.length<2){toast("أضف خيارين على الأقل");return}
+   W(function(){return db.collection("polls").add({q:q,opts:o.slice(0,10),closed:false,ts:Date.now()})},"تم إنشاء الاستطلاع").then(function(ok){if(ok)f.reset()})},
+ "f-chat":function(f){
+   var ta=f.elements.text,tx=ta.value.trim();if(!tx||sending)return;
+   if(!ensureName())return;
+   if(chatState()!=="ok"){toast("لا يمكنك الكتابة الآن");return}
+   sending=true;$("#chatSend").disabled=true;
+   W(function(){return db.collection("chat").add({uid:uid,text:tx.slice(0,500),ts:Date.now()})}).then(function(ok){sending=false;$("#chatSend").disabled=false;if(ok){ta.value="";ta.focus()}})},
+ "f-fb":function(f){
+   var tx=f.elements.text.value.trim();if(!tx)return;if(!ensureName())return;var ts=Date.now();
+   W(function(){return db.collection("inbox/"+uid+"/items").add({from:"s",topic:f.elements.topic.value,text:tx,ts:ts}).then(function(){return db.doc("members/"+uid).update({fbAt:ts})})},"تم إرسال ملاحظتك").then(function(ok){if(ok)f.elements.text.value=""})},
+ "f-reply":function(f){
+   var tx=f.elements.text.value.trim();if(!tx||!threadUid)return;var ts=Date.now(),id=threadUid;
+   W(function(){return db.collection("inbox/"+id+"/items").add({from:"a",text:tx,ts:ts}).then(function(){return db.doc("members/"+id).update({replyAt:ts,adminSeenAt:ts})})},"تم إرسال الرد").then(function(ok){if(ok)f.elements.text.value=""})}
+};
+function openThread(id){
+  threadUid=id;D.thread=[];if(unsubThread){unsubThread();unsubThread=null}
+  unsubThread=db.collection("inbox/"+id+"/items").orderBy("ts","asc").limit(200).onSnapshot(function(s){
+    D.thread=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});
+    var last=D.thread.length?D.thread[D.thread.length-1].ts:0,m=D.members[id];
+    if(isAdmin&&m&&last>(m.adminSeenAt||0)&&D.thread[D.thread.length-1].from==="s")db.doc("members/"+id).update({adminSeenAt:last}).catch(function(){});
+    schedule()},function(){schedule()});
+  show("fb")}
+function closeThread(){threadUid=null;if(unsubThread){unsubThread();unsubThread=null}D.thread=[];show("fb")}
+var seenBusy=false;
+function togglePreview(){preview=!preview;isAdmin=realAdmin&&!preview;showMgr=false;threadUid=null;if(unsubThread){unsubThread();unsubThread=null}D.thread=[];show(tab);renderChip()}
+function markSeen(){
+  if(realAdmin||!uid||seenBusy)return;var m=D.members[uid];
+  if(m&&m.replyAt&&m.replyAt>(m.replySeenAt||0)){seenBusy=true;db.doc("members/"+uid).update({replySeenAt:m.replyAt}).catch(function(){}).then(function(){seenBusy=false})}}
+
+var acts={
+ go:function(id){show(id)},
+ chip:function(){if(realAdmin){togglePreview();return}openSheet(false)},
+ "sheet-close":function(){if(!nameForced)closeSheet()},
+ "ann-pin":function(id){var a=D.ann.filter(function(x){return x.id===id})[0];if(a)W(function(){return db.doc("announcements/"+id).update({pin:!a.pin})})},
+ "ann-del":function(id){if(!isArmed("ann"+id))return arm("ann"+id);W(function(){return db.doc("announcements/"+id).delete()},"تم الحذف")},
+ "poll-pick":function(id,i){pending[id]=+i;paint()},
+ "poll-confirm":function(id){
+   var i=pending[id];if(i==null)return;if(!ensureName())return;
+   var mine=mineVotes();if(mine[id]!=null)return;
+   W(function(){return db.doc("votes/"+id+"_"+uid).set({pid:id,uid:uid,choice:i,ts:Date.now()})},"تم تسجيل صوتك")},
+ "poll-close":function(id){var p=D.polls.filter(function(x){return x.id===id})[0];if(p)W(function(){return db.doc("polls/"+id).update({closed:!p.closed})})},
+ "poll-del":function(id){if(!isArmed("poll"+id))return arm("poll"+id);W(function(){return db.doc("polls/"+id).delete()},"تم الحذف")},
+ "chat-mgr":function(){showMgr=!showMgr;paint()},
+ "chat-lock":function(){var l=!!(D.cfg.chat&&D.cfg.chat.locked);W(function(){return db.doc("settings/chat").set({locked:!l,at:Date.now()})},l?"تم فتح الدردشة":"تم قفل الدردشة")},
+ mute:function(id){W(function(){return db.doc("mutes/"+id).set({at:Date.now()})},"تم الكتم")},
+ unmute:function(id){W(function(){return db.doc("mutes/"+id).delete()},"تم إلغاء الكتم")},
+ "msg-del":function(id){if(!isArmed("msg"+id))return arm("msg"+id);W(function(){return db.doc("chat/"+id).delete()})},
+ "fb-open":function(id){openThread(id)},
+ "fb-back":function(){closeThread()},
+ "admin-login":function(){openLogin()},
+ "admin-out":function(){if(backend)backend.signOut()},
+ "login-close":function(){closeLogin()}
+};
+document.addEventListener("click",function(e){var b=e.target.closest("[data-act]");if(!b||b.disabled)return;var a=acts[b.dataset.act];if(a)a(b.dataset.id,b.dataset.i)});
+document.addEventListener("submit",function(e){var f=e.target.closest("form");if(!f)return;e.preventDefault();if(!forms[f.id])return;if(f.id==="f-login"||(db&&uid))forms[f.id](f)});
+document.addEventListener("keydown",function(e){if(e.target.id==="chatIn"&&e.key==="Enter"&&!e.shiftKey){e.preventDefault();var f=$("#f-chat");if(f&&forms["f-chat"])forms["f-chat"](f)}});
+
+/* ---------- live data ---------- */
+var subs=[];
+function sub(q,fn){var u=q.onSnapshot(function(s){fn(s);schedule()},function(e){if(window.console)console.warn("db",e&&e.code)});subs.push(u);return u}
+function stopSubs(){subs.forEach(function(u){try{u()}catch(e){}});subs=[]}
+function rows(s){return s.docs.map(function(d){return Object.assign({id:d.id},d.data())})}
+function map(s){var o={};s.docs.forEach(function(d){o[d.id]=d.data()});return o}
+function startSubs(){
+  sub(db.collection("announcements").orderBy("ts","desc").limit(100),function(s){D.ann=rows(s)});
+  sub(db.collection("polls").orderBy("ts","desc").limit(50),function(s){D.polls=rows(s).filter(function(p){return Array.isArray(p.opts)})});
+  sub(db.collection("votes").limit(1000),function(s){D.votes=rows(s)});
+  sub(db.collection("mutes"),function(s){D.mutes=map(s)});
+  sub(db.collection("chat").orderBy("ts","desc").limit(200),function(s){D.chat=rows(s)});
+  sub(db.collection("settings"),function(s){
+    D.cfg=map(s);
+    if(realAdmin&&!D.ready.admin&&(!D.cfg.admin||D.cfg.admin.uid!==uid)){D.ready.admin=true;db.doc("settings/admin").set({uid:uid}).catch(function(){})}});
+  sub(db.collection("members").limit(1000),function(s){
+    D.members=map(s);
+    if(!D.ready.members){D.ready.members=true;if(!realAdmin&&!(D.members[uid]&&D.members[uid].name)&&canWrite!==false)openSheet(true)}
+    if(tab==="fb")markSeen()});
+  if(!realAdmin){
+    sub(db.collection("inbox/"+uid+"/items").orderBy("ts","asc").limit(200),function(s){D.thread=rows(s)})}
+}
+
+/* ---------- boot ---------- */
+function openLogin(){$("#sheetA").hidden=false;$("#admErr").textContent="";setTimeout(function(){$("#admEmail").focus()},50)}
+function closeLogin(){$("#sheetA").hidden=true}
+var started=false;
+function resetData(){D.ann=[];D.polls=[];D.votes=[];D.members={};D.mutes={};D.cfg={};D.chat=[];D.thread=[];D.ready={};threadUid=null;if(unsubThread){unsubThread();unsubThread=null}}
+function onUser(u){
+  stopSubs();resetData();uid=u.uid;
+  realAdmin=!!u.email&&!!backend.adminEmail&&u.email.toLowerCase()===backend.adminEmail;
+  isAdmin=realAdmin&&!preview;canWrite=true;showMgr=false;
+  startSubs();closeLogin();show(tab);renderChip()}
+function boot2(){
+  if(started)return;started=true;backend=window.HubBackend;
+  if(!backend.configured){paint();return}
+  db=backend.db;
+  backend.onUser(function(u,err){
+    if(!u){statusMsg=err?"تعذّر تسجيل دخولك. تأكد أن الدخول المجهول مفعّل في Firebase.":"";paint();return}
+    onUser(u)})}
+function boot(){
+  show("home");
+  if(window.HubBackend){boot2();return}
+  window.addEventListener("hubbackend",boot2);
+  setTimeout(function(){if(!started){statusMsg="تعذّر تحميل الخدمة. تحقق من الإنترنت ثم أعد فتح الصفحة.";paint()}},10000)}
+boot();
+})();
+</script>
+
+</body>
+</html>
